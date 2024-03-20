@@ -1,0 +1,224 @@
+create virtual env -uenv.
+activate environmnet- 'uenv/Scripts/activate'.
+install django - "pip install django".
+start project - " django-adming startproject monthly_challange_project".
+enter inside project.
+start new app - "django-admin startapp monthly_challanging_cpp".
+register the app in settings in "Installed app".
+after end work close server by cmd-'uenv/Scripts/deactivate'.
+************************************************
+start first app.
+
+add urls of app in main urls.
+//
+from django.contrib import admin
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include("monthly_challange_app.urls")),
+]
+//
+..................................................
+go in app level urls and add veiws functions.
+
+//
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("january/",views.january),
+    path("februry",views.februry),
+    
+]
+//
+.................................................
+implement views function in veiws.py 
+//
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def january(request):
+    return HttpResponse("it's january")
+def februry(request):
+    return HttpResponse("it's fabrury")
+//
+.................................................
+now same folder run cmd-'python manage.py runserver' .
+
+In above app level urls have hardcoding of months. To prevent from hardcoding we have to use - ' <> in urlpatterns'.
+
+path("<month>",views.month_name), where month is variable for urls pass to respective veiws function.
+
+code for veiws.month_name()
+//
+def month_name(request,month):
+ret = None
+    if month=='march':
+        ret="it's march"
+    elif month=='april':
+        ret = "it's april fool"
+    else:
+        ret = "spacify month name"
+    return HttpResponse(ret)
+
+
+    or we can add
+    else:
+        return HttpResponseNotFound()
+//
+
+*****************************************************************************************************
+*****************************************************************************************************
+start another app in same project.
+
+django-admin startapp urls_inputs.
+register in  mian app inside setting -> Installed_app
+add urls in main urlpattern- path("urls_input/",include("urls_inputs.urls"))
+##for multiple apps required to add name in path.
+
+main urls - 
+//
+from django.contrib import admin
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',include("monthly_challange_app.urls")),
+    path('urls_inputs/',include("urls_inputs.urls")),
+]
+//
+.....................................
+app urls-
+//
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("<month_name>",views.monthbyname),
+]
+//
+...........................................
+write functions and code inside views.
+views-
+//
+from django.shortcuts import render
+from django.http import HttpResponse
+
+month_challange={
+    'janary':"It's january monht no 1",
+    'fabrury':"it's februry month no 2",
+     'may':"it's may month no 5",
+     'june':"it's june month no 6",
+}
+def monthbyname(request,month_name):
+    try:
+        ret = month_challange[month_name]
+    except:
+        ret = "not in app pls enter starting 5"
+    return  HttpResponse(ret)        
+ 
+//
+...........................................
+how to redirect by adding month - variable name....
+//
+def monthly_redirect_by_no(request,month):
+    list_of_month=list(month_challange.key())
+    if month in list_of_month: 
+        return HttpResponseRedirect('/challanges_app/'+ month)
+//
+....................................................
+different data types in urls
+//
+path("<int:var_name>",views.func_name1),
+path("<str:var_name>",views.func_name2),
+//
+...................................................
+views function for dynamic urls.
+//
+def monthly_redirect_by_no(request,month):
+    list_of_month=list(month_challange.keys())
+    if list_of_month[month]:
+        return HttpResponseRedirect('/urls_inputs/'+ list_of_month[month])
+    else:
+        return HttpResponse("Months Not Found in inside collaction") #after adding this else statement except ret not required.
+//
+..............................
+******************************************************************************************
+******************************************************************************************
+                     Third app naming urls 
+
+
+django-admin startapp naming_url_app
+register in settings.
+mkae app level urls.
+add in main urls.
+change project level urls function..
+add
+//
+urlpattern=[
+path("naming_url_app/",include("naming_url_app.urls")),
+]        
+//
+app level urls..
+//
+urlpattern=[
+    path('<int:count>',views.func_name1)
+    path("<str:name>",views.func_name2,name='naming_url')
+]
+//
+views function..
+//
+def func_name1(request,count):
+    if list_of_name[count]:
+        redirect_url=reverse("naming_url",args=[list_of_name[name]])
+        return HttpResponseRedirect(redirect_url)
+    else:
+        return HttpResponse("name not found")
+
+def func_name2(request,name):
+    return HttpResponse("My name is -",name)
+//
+*****************************************************
+*****************************************************
+third app html syntext in HttpResponse
+
+in httpresponse--
+return HttpResponse(f"<h1>text {value}<\h1>")
+
+create an app html_output register and add url in main urls.
+make urls.py app level.
+
+modified code in main urls.
+//
+path('html_output/',include(html_output.urls)),
+//
+..........................
+
+app level urls code
+//
+path('<int:value>',views.func_name1,name='name1'),
+path('<str:value>',views.func_name2,name='name2'),
+//
+.........................
+
+views code-
+//
+def func_name1(request,value):
+    if value%2==0:
+        path_redirect=reverse('name2',args=["max time"])
+    else:
+        path_redirect=reverse('name2',args=[f"<h>given number is min enter again<h1>"])
+    return HttpResponseRedirect(path_redirect)        
+
+
+def func_name2(request,value):
+    return HttpResponse(f"<ul><li>entered values are {value} <\li><ul\>")    
+//
+
+
+.....................................
+
+
+
